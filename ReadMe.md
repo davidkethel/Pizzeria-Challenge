@@ -14,3 +14,5 @@ Nice-to-have:
 
 
 We appoint you a manager of this project, so feel free to add more features if you like :)
+
+__ADD YOUR NAME HERE__
