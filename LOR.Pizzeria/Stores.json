@@ -58,5 +58,40 @@
         "BasePrice": 32
       }
     ]
+  },
+  {
+    "Location": "Gold Coast",
+    "Menu": [
+      {
+        "Name": "Capriciosa",
+        "Ingredients": [
+          "mushrooms",
+          "cheese",
+          "ham",
+          "mozarella"
+        ],
+        "BasePrice": 25
+      },
+      {
+        "Name": "Margherita",
+        "Ingredients": [
+          "mozarella",
+          "onion",
+          "garlic",
+          "oregano"
+        ],
+        "BasePrice": 27
+      },
+      {
+        "Name": "Florenza",
+        "Ingredients": [
+          "olives",
+          "pastrami",
+          "mozarella",
+          "onion"
+        ],
+        "BasePrice": 24
+      }
+    ]
   }
 ]
