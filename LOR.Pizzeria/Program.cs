@@ -28,9 +28,18 @@ namespace LOR.Pizzeria
 
         private static List<Store> LoadStores()
         {
-            var jsonString = File.ReadAllText("Stores.json");
-            var stores = JsonSerializer.Deserialize<List<Store>>(jsonString);
-
+            var stores = new List<Store>();
+            var filePath = "Stores.json";
+            try
+            {
+                var jsonString = File.ReadAllText(filePath);
+                stores = JsonSerializer.Deserialize<List<Store>>(jsonString);
+            }
+            catch (Exception)
+            {
+                Console.Error.WriteLine($"ERROR reading data from file: {filePath}");
+                Environment.Exit(0);
+            }
             return stores;
         }
 
