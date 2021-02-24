@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LOR.Pizzeria
 {
@@ -7,60 +8,55 @@ namespace LOR.Pizzeria
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Welcome to LOR Pizzeria! Please select the store location: Brisbane OR Sydney");
+
+            var stores = new List<Store>
+            {
+                new Store
+                {
+                    Location = "Brisbane",
+                    Menu = new List<Pizza> {
+                        new Pizza() { Name = "Capriciosa", Ingredients = new List<string> { "mushrooms", "cheese", "ham", "mozarella" }, BasePrice = 20 },
+                        new Pizza() { Name = "Florenza", Ingredients = new List<string> { "olives", "pastrami", "mozarella", "onion" }, BasePrice = 21},
+                        new Pizza() { Name = "Margherita", Ingredients = new List<string> { "mozarella", "onion", "garlic", "oregano" }, BasePrice = 22}
+                    }
+                },
+                new Store
+                {
+                    Location = "Sydney",
+                    Menu = new List<Pizza> {
+                        new Pizza() { Name = "Capriciosa", Ingredients = new List<string> { "mushrooms", "cheese", "ham", "mozarella" }, BasePrice = 30 },
+                        new Pizza() { Name = "Inferno", Ingredients = new List<string> { "chili peppers", "mozzarella", "chicken", "cheese" }, BasePrice = 31}
+                    }
+                },
+                
+            };
+
+            var allStoreNames = String.Join(" or ", stores.Select(x => x.Location));
+            Console.WriteLine($"Welcome to LOR Pizzeria! Please select the store location: {allStoreNames}");
             var Store = Console.ReadLine();
+            var selectedStore = stores.FirstOrDefault(x => String.Equals(x.Location.Trim(), Store.Trim(), StringComparison.InvariantCultureIgnoreCase));
+
 
             Console.WriteLine("MENU");
-            if (Store == "Brisbane")
+            foreach (var pizza in selectedStore.Menu)
             {
-                Console.WriteLine("Capriciosa - mushrooms, cheese, ham, mozarella - 20 AUD");
-                Console.WriteLine("Florenza - olives, pastrami, mozarella, onion - 21 AUD");
-                Console.WriteLine("Margherita - mozarella, onion, garlic, oregano - 22 AUD");
+                var ingredientsList = String.Join(", ", pizza.Ingredients);
+                Console.WriteLine($"{pizza.Name} - {ingredientsList} - {pizza.BasePrice} AUD");
             }
-            else if (Store == "Sydney")
-            {
-                Console.WriteLine("Capriciosa - mushrooms, cheese, ham, mozarella - 30 AUD");
-                Console.WriteLine("Inferno - chili peppers, mozzarella, chicken, cheese - 31 AUD");
-            }
-
-
 
             Console.WriteLine("What can I get you?");
-
             var pizzaType = Console.ReadLine();
 
+            var selectedPizza = selectedStore.Menu.FirstOrDefault(x => String.Equals(x.Name.Trim(), pizzaType.Trim(), StringComparison.InvariantCultureIgnoreCase));
+            
 
-            var pizza = new Pizza();
-            switch(pizzaType)
-            {
-                case "Capriciosa":
-                    var capriciosaPrice = 0;
-                    if (Store == "Brisbane") capriciosaPrice = 20;
-                    if (Store == "Sydney") capriciosaPrice = 30;
-
-                    pizza = new Pizza(){ Name = "Capriciosa", Ingredients = new List<string>{ "mushrooms", "cheese", "ham", "mozarella" }, BasePrice = capriciosaPrice};
-                    break;
-                case "Florenza":
-                    pizza = new Pizza() { Name = "Florenza", Ingredients = new List<string> { "olives", "pastrami", "mozarella", "onion" }, BasePrice = 21};
-                    break;
-                case "Margherita":
-                    pizza = new Pizza() { Name = "Margherita", Ingredients = new List<string> { "mozarella", "onion", "garlic", "oregano" }, BasePrice = 22};
-                    break;
-                case "Inferno":
-                    pizza = new Pizza() { Name = "Inferno", Ingredients = new List<string> { "chili peppers", "mozzarella", "chicken", "cheese" }, BasePrice = 31};
-                    break;
-                default:
-                    break;
-            }
-            pizza.Prepare();
-            pizza.Bake();
-            pizza.Cut();
-            pizza.Box();
-            pizza.PrintReceipt();
+            selectedPizza.Prepare();
+            selectedPizza.Bake();
+            selectedPizza.Cut();
+            selectedPizza.Box();
+            selectedPizza.PrintReceipt();
 
             Console.WriteLine("\nYour pizza is ready!");
         }
     }
-
-   
 }
