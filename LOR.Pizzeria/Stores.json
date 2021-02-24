@@ -10,7 +10,7 @@
           "ham",
           "mozarella"
         ],
-        "BasePrice": "20"
+        "BasePrice": 20
       },
       {
         "Name": "Florenza",
@@ -20,7 +20,7 @@
           "mozarella",
           "onion"
         ],
-        "BasePrice": "21"
+        "BasePrice": 21
       },
       {
         "Name": "Margherita",
@@ -30,7 +30,7 @@
           "garlic",
           "oregano"
         ],
-        "BasePrice": "22"
+        "BasePrice": 22
       }
     ]
   },
@@ -45,7 +45,7 @@
           "ham",
           "mozarella"
         ],
-        "BasePrice": "30"
+        "BasePrice": 30
       },
       {
         "Name": "Margherita",
@@ -55,7 +55,7 @@
           "garlic",
           "oregano"
         ],
-        "BasePrice": "32"
+        "BasePrice": 32
       }
     ]
   }

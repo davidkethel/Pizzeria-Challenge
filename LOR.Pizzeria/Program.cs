@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 
 namespace LOR.Pizzeria
 {
@@ -26,26 +28,9 @@ namespace LOR.Pizzeria
 
         private static List<Store> LoadStores()
         {
-            return new List<Store>
-            {
-                new Store
-                {
-                    Location = "Brisbane",
-                    Menu = new List<Pizza> {
-                        new Pizza() { Name = "Capriciosa", Ingredients = new List<string> { "mushrooms", "cheese", "ham", "mozarella" }, BasePrice = 20 },
-                        new Pizza() { Name = "Florenza", Ingredients = new List<string> { "olives", "pastrami", "mozarella", "onion" }, BasePrice = 21},
-                        new Pizza() { Name = "Margherita", Ingredients = new List<string> { "mozarella", "onion", "garlic", "oregano" }, BasePrice = 22}
-                    }
-                },
-                new Store
-                {
-                    Location = "Sydney",
-                    Menu = new List<Pizza> {
-                        new Pizza() { Name = "Capriciosa", Ingredients = new List<string> { "mushrooms", "cheese", "ham", "mozarella" }, BasePrice = 30 },
-                        new Pizza() { Name = "Inferno", Ingredients = new List<string> { "chili peppers", "mozzarella", "chicken", "cheese" }, BasePrice = 31}
-                    }
-                },
-            };
+            var jsonString = File.ReadAllText("Stores.json");
+            var stores = JsonSerializer.Deserialize<List<Store>>(jsonString);
+            return stores;
         }
 
         private static Store GetUsersLocation(List<Store> stores)
