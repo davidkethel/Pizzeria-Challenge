@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 
 namespace LOR.Pizzeria
 {
@@ -10,7 +12,7 @@ namespace LOR.Pizzeria
         {
 
             var stores = LoadStores();
-
+           
             var selectedStore = GetUsersLocation(stores);
 
             var selectedPizza = GetUsersPizza(selectedStore);
@@ -26,26 +28,10 @@ namespace LOR.Pizzeria
 
         private static List<Store> LoadStores()
         {
-            return new List<Store>
-            {
-                new Store
-                {
-                    Location = "Brisbane",
-                    Menu = new List<Pizza> {
-                        new Pizza() { Name = "Capriciosa", Ingredients = new List<string> { "mushrooms", "cheese", "ham", "mozarella" }, BasePrice = 20 },
-                        new Pizza() { Name = "Florenza", Ingredients = new List<string> { "olives", "pastrami", "mozarella", "onion" }, BasePrice = 21},
-                        new Pizza() { Name = "Margherita", Ingredients = new List<string> { "mozarella", "onion", "garlic", "oregano" }, BasePrice = 22}
-                    }
-                },
-                new Store
-                {
-                    Location = "Sydney",
-                    Menu = new List<Pizza> {
-                        new Pizza() { Name = "Capriciosa", Ingredients = new List<string> { "mushrooms", "cheese", "ham", "mozarella" }, BasePrice = 30 },
-                        new Pizza() { Name = "Inferno", Ingredients = new List<string> { "chili peppers", "mozzarella", "chicken", "cheese" }, BasePrice = 31}
-                    }
-                },
-            };
+            var jsonString = File.ReadAllText("Stores.json");
+            var stores = JsonSerializer.Deserialize<List<Store>>(jsonString);
+
+            return stores;
         }
 
         private static Store GetUsersLocation(List<Store> stores)
@@ -55,6 +41,7 @@ namespace LOR.Pizzeria
             var Store = Console.ReadLine();
             var selectedStore = stores.FirstOrDefault(x => String.Equals(x.Location.Trim(), Store.Trim(), StringComparison.InvariantCultureIgnoreCase));
 
+            //Keep asking the user for their location until they enter one we recognise.
             while (selectedStore == null)
             {
                 Console.WriteLine("Im Sorry, I don't recognize that location. Please select from the following store locations");
@@ -75,9 +62,10 @@ namespace LOR.Pizzeria
             }
 
             Console.WriteLine("What can I get you?");
-            var pizzaType = Console.ReadLine();
-
+            var pizzaType = Console.ReadLine();            
             var selectedPizza = store.Menu.FirstOrDefault(x => String.Equals(x.Name.Trim(), pizzaType.Trim(), StringComparison.InvariantCultureIgnoreCase));
+
+            //Keep asking the user for a pizza until they enter one from the menu
             while (selectedPizza == null)
             {
                 Console.WriteLine("Im Sorry, I don't recognize that Pizza. Please select from the following Pizzas");
