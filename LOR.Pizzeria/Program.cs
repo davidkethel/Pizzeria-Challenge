@@ -60,7 +60,6 @@ namespace LOR.Pizzeria
                         new Pizza() { Name = "Inferno", Ingredients = new List<string> { "chili peppers", "mozzarella", "chicken", "cheese" }, BasePrice = 31}
                     }
                 },
-
             };
         }
     }
