@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
 
 namespace LOR.Pizzeria
 {
@@ -7,107 +10,75 @@ namespace LOR.Pizzeria
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Welcome to LOR Pizzeria! Please select the store location: Brisbane OR Sydney");
-            var Store = Console.ReadLine();
 
-            Console.WriteLine("MENU");
-            if (Store == "Brisbane")
-            {
-                Console.WriteLine("Capriciosa - mushrooms, cheese, ham, mozarella - 20 AUD");
-                Console.WriteLine("Florenza - olives, pastrami, mozarella, onion - 21 AUD");
-                Console.WriteLine("Margherita - mozarella, onion, garlic, oregano - 22 AUD");
-            }
-            else if (Store == "Sydney")
-            {
-                Console.WriteLine("Capriciosa - mushrooms, cheese, ham, mozarella - 30 AUD");
-                Console.WriteLine("Inferno - chili peppers, mozzarella, chicken, cheese - 31 AUD");
-            }
+            var stores = LoadStores();
+           
+            var selectedStore = GetUsersLocation(stores);
 
+            var selectedPizza = GetUsersPizza(selectedStore);
 
-
-            Console.WriteLine("What can I get you?");
-
-            var pizzaType = Console.ReadLine();
-
-
-            var pizza = new Pizza();
-            switch(pizzaType)
-            {
-                case "Capriciosa":
-                    var capriciosaPrice = 0;
-                    if (Store == "Brisbane") capriciosaPrice = 20;
-                    if (Store == "Sydney") capriciosaPrice = 30;
-
-                    pizza = new Pizza(){ Name = "Capriciosa", Ingredients = new List<string>{ "mushrooms", "cheese", "ham", "mozarella" }, BasePrice = capriciosaPrice};
-                    break;
-                case "Florenza":
-                    pizza = new Pizza() { Name = "Florenza", Ingredients = new List<string> { "olives", "pastrami", "mozarella", "onion" }, BasePrice = 21};
-                    break;
-                case "Margherita":
-                    pizza = new Pizza() { Name = "Margherita", Ingredients = new List<string> { "mozarella", "onion", "garlic", "oregano" }, BasePrice = 22};
-                    break;
-                case "Inferno":
-                    pizza = new Pizza() { Name = "Inferno", Ingredients = new List<string> { "chili peppers", "mozzarella", "chicken", "cheese" }, BasePrice = 31};
-                    break;
-                default:
-                    break;
-            }
-            pizza.Prepare();
-            pizza.Bake();
-            pizza.Cut();
-            pizza.Box();
-            pizza.PrintReceipt();
+            selectedPizza.Prepare();
+            selectedPizza.Bake();
+            selectedPizza.Cut();
+            selectedPizza.Box();
+            selectedPizza.PrintReceipt();
 
             Console.WriteLine("\nYour pizza is ready!");
         }
-    }
 
-    public class Pizza
-    {
-        public string Name { get; set; }
-        public List<string> Ingredients { get; set; } = new List<string>();
-        public decimal BasePrice { get; set; }
-
-        public void Prepare()
+        private static List<Store> LoadStores()
         {
-            Console.WriteLine("Preparing " + Name + "...");
-            Console.Write("Adding ");
-            foreach (var i in Ingredients)
+            var jsonString = File.ReadAllText("Stores.json");
+            var stores = JsonSerializer.Deserialize<List<Store>>(jsonString);
+
+            return stores;
+        }
+
+        private static Store GetUsersLocation(List<Store> stores)
+        {
+            var allStoreNames = String.Join(" or ", stores.Select(x => x.Location));
+            Console.WriteLine($"Welcome to LOR Pizzeria! Please select the store location: {allStoreNames}");
+            var Store = Console.ReadLine();
+            var selectedStore = stores.FirstOrDefault(x => String.Equals(x.Location.Trim(), Store.Trim(), StringComparison.InvariantCultureIgnoreCase));
+
+            //Keep asking the user for their location until they enter one we recognise.
+            while (selectedStore == null)
             {
-                Console.Write(i + " ");
+                Console.WriteLine("Im Sorry, I don't recognize that location. Please select from the following store locations");
+                Console.WriteLine($"{allStoreNames}");
+                Store = Console.ReadLine();
+                selectedStore = stores.FirstOrDefault(x => String.Equals(x.Location.Trim(), Store.Trim(), StringComparison.InvariantCultureIgnoreCase));
             }
-            Console.WriteLine();
+
+            return selectedStore;
         }
 
-        public void Bake()
+        private static Pizza GetUsersPizza(Store store)
         {
-            if(Name == "Margherita")
-            Console.WriteLine("Baking pizza for 15 minutes at 200 degrees...");
-            else
+            Console.WriteLine("MENU");
+            foreach (var pizza in store.Menu)
+            {                
+                Console.WriteLine(pizza);
+            }
+
+            Console.WriteLine("What can I get you?");
+            var pizzaType = Console.ReadLine();            
+            var selectedPizza = store.Menu.FirstOrDefault(x => String.Equals(x.Name.Trim(), pizzaType.Trim(), StringComparison.InvariantCultureIgnoreCase));
+
+            //Keep asking the user for a pizza until they enter one from the menu
+            while (selectedPizza == null)
             {
-                Console.WriteLine("Baking pizza for 30 minutes at 200 degrees...");
+                Console.WriteLine("Im Sorry, I don't recognize that Pizza. Please select from the following Pizzas");
+                foreach (var pizza in store.Menu)
+                {
+                    Console.WriteLine(pizza);
+                }
+
+                pizzaType = Console.ReadLine();
+                selectedPizza = store.Menu.FirstOrDefault(x => String.Equals(x.Name.Trim(), pizzaType.Trim(), StringComparison.InvariantCultureIgnoreCase));
             }
-        }
 
-        public void Cut()
-        {
-            if (Name == "Florenza")
-                Console.WriteLine("Cutting pizza into 6 slices with a special knife...");
-            else
-            {
-                Console.WriteLine("Cutting pizza into 8 slices...");
-            }
-        }
-
-        public void Box()
-        {
-            Console.WriteLine("Putting pizza into a nice box...");
-        }
-
-
-        public void PrintReceipt()
-        {
-            Console.WriteLine("Total price: " + BasePrice);
+            return selectedPizza;
         }
     }
 }
