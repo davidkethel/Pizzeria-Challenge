@@ -11,24 +11,9 @@ namespace LOR.Pizzeria
 
             var stores = LoadStores();
 
-            var allStoreNames = String.Join(" or ", stores.Select(x => x.Location));
-            Console.WriteLine($"Welcome to LOR Pizzeria! Please select the store location: {allStoreNames}");
-            var Store = Console.ReadLine();
-            var selectedStore = stores.FirstOrDefault(x => String.Equals(x.Location.Trim(), Store.Trim(), StringComparison.InvariantCultureIgnoreCase));
+            var selectedStore = GetUsersLocation(stores);
 
-
-            Console.WriteLine("MENU");
-            foreach (var pizza in selectedStore.Menu)
-            {
-                var ingredientsList = String.Join(", ", pizza.Ingredients);
-                Console.WriteLine($"{pizza.Name} - {ingredientsList} - {pizza.BasePrice} AUD");
-            }
-
-            Console.WriteLine("What can I get you?");
-            var pizzaType = Console.ReadLine();
-
-            var selectedPizza = selectedStore.Menu.FirstOrDefault(x => String.Equals(x.Name.Trim(), pizzaType.Trim(), StringComparison.InvariantCultureIgnoreCase));
-
+            var selectedPizza = GetUsersPizza(selectedStore);
 
             selectedPizza.Prepare();
             selectedPizza.Bake();
@@ -39,7 +24,7 @@ namespace LOR.Pizzeria
             Console.WriteLine("\nYour pizza is ready!");
         }
 
-        public static List<Store> LoadStores()
+        private static List<Store> LoadStores()
         {
             return new List<Store>
             {
@@ -61,6 +46,53 @@ namespace LOR.Pizzeria
                     }
                 },
             };
+        }
+
+        private static Store GetUsersLocation(List<Store> stores)
+        {
+            var allStoreNames = String.Join(" or ", stores.Select(x => x.Location));
+            Console.WriteLine($"Welcome to LOR Pizzeria! Please select the store location: {allStoreNames}");
+            var Store = Console.ReadLine();
+            var selectedStore = stores.FirstOrDefault(x => String.Equals(x.Location.Trim(), Store.Trim(), StringComparison.InvariantCultureIgnoreCase));
+
+            while (selectedStore == null)
+            {
+                Console.WriteLine("Im Sorry, I don't recognize that location. Please select from the following store locations");
+                Console.WriteLine($"{allStoreNames}");
+                Store = Console.ReadLine();
+                selectedStore = stores.FirstOrDefault(x => String.Equals(x.Location.Trim(), Store.Trim(), StringComparison.InvariantCultureIgnoreCase));
+            }
+
+            return selectedStore;
+        }
+
+        private static Pizza GetUsersPizza(Store store)
+        {
+            Console.WriteLine("MENU");
+            foreach (var pizza in store.Menu)
+            {
+                var ingredientsList = String.Join(", ", pizza.Ingredients);
+                Console.WriteLine($"{pizza.Name} - {ingredientsList} - {pizza.BasePrice} AUD");
+            }
+
+            Console.WriteLine("What can I get you?");
+            var pizzaType = Console.ReadLine();
+
+            var selectedPizza = store.Menu.FirstOrDefault(x => String.Equals(x.Name.Trim(), pizzaType.Trim(), StringComparison.InvariantCultureIgnoreCase));
+            while (selectedPizza == null)
+            {
+                Console.WriteLine("Im Sorry, I don't recognize that Pizza. Please select from the following Pizzas");
+                foreach (var pizza in store.Menu)
+                {
+                    var ingredientsList = String.Join(", ", pizza.Ingredients);
+                    Console.WriteLine($"{pizza.Name} - {ingredientsList} - {pizza.BasePrice} AUD");
+                }
+
+                pizzaType = Console.ReadLine();
+                selectedPizza = store.Menu.FirstOrDefault(x => String.Equals(x.Name.Trim(), pizzaType.Trim(), StringComparison.InvariantCultureIgnoreCase));
+            }
+
+            return selectedPizza;
         }
     }
 }
