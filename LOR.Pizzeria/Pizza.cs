@@ -51,5 +51,11 @@ namespace LOR.Pizzeria
         {
             Console.WriteLine("Total price: " + BasePrice);
         }
+
+        public override string ToString()
+        {
+            var ingredientsList = String.Join(", ", Ingredients);
+            return $"{Name} - {ingredientsList} - {BasePrice} AUD";
+        }
     }
 }

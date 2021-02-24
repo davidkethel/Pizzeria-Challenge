@@ -70,9 +70,8 @@ namespace LOR.Pizzeria
         {
             Console.WriteLine("MENU");
             foreach (var pizza in store.Menu)
-            {
-                var ingredientsList = String.Join(", ", pizza.Ingredients);
-                Console.WriteLine($"{pizza.Name} - {ingredientsList} - {pizza.BasePrice} AUD");
+            {                
+                Console.WriteLine(pizza);
             }
 
             Console.WriteLine("What can I get you?");
@@ -84,8 +83,7 @@ namespace LOR.Pizzeria
                 Console.WriteLine("Im Sorry, I don't recognize that Pizza. Please select from the following Pizzas");
                 foreach (var pizza in store.Menu)
                 {
-                    var ingredientsList = String.Join(", ", pizza.Ingredients);
-                    Console.WriteLine($"{pizza.Name} - {ingredientsList} - {pizza.BasePrice} AUD");
+                    Console.WriteLine(pizza);
                 }
 
                 pizzaType = Console.ReadLine();
