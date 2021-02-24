@@ -9,27 +9,7 @@ namespace LOR.Pizzeria
         static void Main(string[] args)
         {
 
-            var stores = new List<Store>
-            {
-                new Store
-                {
-                    Location = "Brisbane",
-                    Menu = new List<Pizza> {
-                        new Pizza() { Name = "Capriciosa", Ingredients = new List<string> { "mushrooms", "cheese", "ham", "mozarella" }, BasePrice = 20 },
-                        new Pizza() { Name = "Florenza", Ingredients = new List<string> { "olives", "pastrami", "mozarella", "onion" }, BasePrice = 21},
-                        new Pizza() { Name = "Margherita", Ingredients = new List<string> { "mozarella", "onion", "garlic", "oregano" }, BasePrice = 22}
-                    }
-                },
-                new Store
-                {
-                    Location = "Sydney",
-                    Menu = new List<Pizza> {
-                        new Pizza() { Name = "Capriciosa", Ingredients = new List<string> { "mushrooms", "cheese", "ham", "mozarella" }, BasePrice = 30 },
-                        new Pizza() { Name = "Inferno", Ingredients = new List<string> { "chili peppers", "mozzarella", "chicken", "cheese" }, BasePrice = 31}
-                    }
-                },
-                
-            };
+            var stores = LoadStores();
 
             var allStoreNames = String.Join(" or ", stores.Select(x => x.Location));
             Console.WriteLine($"Welcome to LOR Pizzeria! Please select the store location: {allStoreNames}");
@@ -48,7 +28,7 @@ namespace LOR.Pizzeria
             var pizzaType = Console.ReadLine();
 
             var selectedPizza = selectedStore.Menu.FirstOrDefault(x => String.Equals(x.Name.Trim(), pizzaType.Trim(), StringComparison.InvariantCultureIgnoreCase));
-            
+
 
             selectedPizza.Prepare();
             selectedPizza.Bake();
@@ -57,6 +37,31 @@ namespace LOR.Pizzeria
             selectedPizza.PrintReceipt();
 
             Console.WriteLine("\nYour pizza is ready!");
+        }
+
+        public static List<Store> LoadStores()
+        {
+            return new List<Store>
+            {
+                new Store
+                {
+                    Location = "Brisbane",
+                    Menu = new List<Pizza> {
+                        new Pizza() { Name = "Capriciosa", Ingredients = new List<string> { "mushrooms", "cheese", "ham", "mozarella" }, BasePrice = 20 },
+                        new Pizza() { Name = "Florenza", Ingredients = new List<string> { "olives", "pastrami", "mozarella", "onion" }, BasePrice = 21},
+                        new Pizza() { Name = "Margherita", Ingredients = new List<string> { "mozarella", "onion", "garlic", "oregano" }, BasePrice = 22}
+                    }
+                },
+                new Store
+                {
+                    Location = "Sydney",
+                    Menu = new List<Pizza> {
+                        new Pizza() { Name = "Capriciosa", Ingredients = new List<string> { "mushrooms", "cheese", "ham", "mozarella" }, BasePrice = 30 },
+                        new Pizza() { Name = "Inferno", Ingredients = new List<string> { "chili peppers", "mozzarella", "chicken", "cheese" }, BasePrice = 31}
+                    }
+                },
+
+            };
         }
     }
 }
