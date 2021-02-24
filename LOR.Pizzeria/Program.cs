@@ -12,7 +12,7 @@ namespace LOR.Pizzeria
         {
 
             var stores = LoadStores();
-
+           
             var selectedStore = GetUsersLocation(stores);
 
             var selectedPizza = GetUsersPizza(selectedStore);
@@ -30,6 +30,7 @@ namespace LOR.Pizzeria
         {
             var jsonString = File.ReadAllText("Stores.json");
             var stores = JsonSerializer.Deserialize<List<Store>>(jsonString);
+
             return stores;
         }
 
@@ -40,6 +41,7 @@ namespace LOR.Pizzeria
             var Store = Console.ReadLine();
             var selectedStore = stores.FirstOrDefault(x => String.Equals(x.Location.Trim(), Store.Trim(), StringComparison.InvariantCultureIgnoreCase));
 
+            //Keep asking the user for their location until they enter one we recognise.
             while (selectedStore == null)
             {
                 Console.WriteLine("Im Sorry, I don't recognize that location. Please select from the following store locations");
@@ -60,9 +62,10 @@ namespace LOR.Pizzeria
             }
 
             Console.WriteLine("What can I get you?");
-            var pizzaType = Console.ReadLine();
-
+            var pizzaType = Console.ReadLine();            
             var selectedPizza = store.Menu.FirstOrDefault(x => String.Equals(x.Name.Trim(), pizzaType.Trim(), StringComparison.InvariantCultureIgnoreCase));
+
+            //Keep asking the user for a pizza until they enter one from the menu
             while (selectedPizza == null)
             {
                 Console.WriteLine("Im Sorry, I don't recognize that Pizza. Please select from the following Pizzas");
