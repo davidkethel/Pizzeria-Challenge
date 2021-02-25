@@ -1,0 +1,50 @@
+[
+  {
+    "Name": "Capriciosa",
+    "Ingredients": [
+      "mushrooms",
+      "cheese",
+      "ham",
+      "mozarella"
+    ],
+    "BakeingSteps": [
+      {
+        "Time": 20,
+        "Temperature": 180
+      }
+    ],
+    "Slices": 6
+  },
+  {
+    "Name": "Florenza",
+    "Ingredients": [
+      "olives",
+      "pastrami",
+      "mozarella",
+      "onion"
+    ],
+    "BakeingSteps": [
+      {
+        "Time": 15,
+        "Temperature": 200
+      }
+    ],
+    "Slices": 8
+  },
+  {
+    "Name": "Margherita",
+    "Ingredients": [
+      "mozarella",
+      "onion",
+      "garlic",
+      "oregano"
+    ],
+    "BakeingSteps": [
+      {
+        "Time": 25,
+        "Temperature": 180
+      }
+    ],
+    "Slices": 6
+  }
+]

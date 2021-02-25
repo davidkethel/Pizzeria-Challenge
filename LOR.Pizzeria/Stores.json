@@ -3,33 +3,19 @@
     "Location": "Brisbane",
     "Menu": [
       {
-        "Name": "Capriciosa",
-        "Ingredients": [
-          "mushrooms",
-          "cheese",
-          "ham",
-          "mozarella"
-        ],
+        "Name": "Capriciosa",       
         "BasePrice": 20
       },
       {
-        "Name": "Florenza",
-        "Ingredients": [
-          "olives",
-          "pastrami",
-          "mozarella",
-          "onion"
-        ],
+        "Name": "Florenza",        
         "BasePrice": 21
       },
       {
         "Name": "Margherita",
-        "Ingredients": [
-          "mozarella",
-          "onion",
-          "garlic",
-          "oregano"
-        ],
+        "BasePrice": 22
+      },
+      {
+        "Name": "Hawaiian",
         "BasePrice": 22
       }
     ]
@@ -38,23 +24,11 @@
     "Location": "Sydney",
     "Menu": [
       {
-        "Name": "Capriciosa",
-        "Ingredients": [
-          "mushrooms",
-          "cheese",
-          "ham",
-          "mozarella"
-        ],
+        "Name": "Capriciosa",        
         "BasePrice": 30
       },
       {
-        "Name": "Margherita",
-        "Ingredients": [
-          "mozarella",
-          "onion",
-          "garlic",
-          "oregano"
-        ],
+        "Name": "Margherita",        
         "BasePrice": 32
       }
     ]
@@ -64,32 +38,14 @@
     "Menu": [
       {
         "Name": "Capriciosa",
-        "Ingredients": [
-          "mushrooms",
-          "cheese",
-          "ham",
-          "mozarella"
-        ],
         "BasePrice": 25
       },
       {
-        "Name": "Margherita",
-        "Ingredients": [
-          "mozarella",
-          "onion",
-          "garlic",
-          "oregano"
-        ],
+        "Name": "Margherita",        
         "BasePrice": 27
       },
       {
-        "Name": "Florenza",
-        "Ingredients": [
-          "olives",
-          "pastrami",
-          "mozarella",
-          "onion"
-        ],
+        "Name": "Florenza",        
         "BasePrice": 24
       }
     ]
