@@ -3,15 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace LOR.Pizzeria
 {
     public class Kitchen
     {
-
         public List<Recipe> RecipeBook { get; set; }
 
-        public Pizza PreparePizza(MenuItem menuItem)
+        public async Task<Pizza>  PreparePizza(MenuItem menuItem)
         {
             Log.Information($"Started Preparing Pizza {menuItem.Name}");
             Console.WriteLine("Preparing " + menuItem.Name + "...");
@@ -31,7 +31,7 @@ namespace LOR.Pizzeria
             }
             Console.Write($"to {newPizza.Name}");
             Console.WriteLine();
-            Bake(newPizza, recipe);
+            await Bake(newPizza, recipe);
             Cut(newPizza, recipe);
             Box(newPizza);
 
@@ -39,12 +39,15 @@ namespace LOR.Pizzeria
             return newPizza;
         }
 
-        public void Bake(Pizza pizza, Recipe recipe)
+        public async Task Bake(Pizza pizza, Recipe recipe)
         {
             Log.Information($"Bakeing Pizza {pizza.Name}");
+            
             foreach (var bakeingInstruction in recipe.BakeingSteps)
             {
                 Console.WriteLine($"Baking {pizza.Name} for {bakeingInstruction.Time} minutes at {bakeingInstruction.Temperature} degrees...");
+                // Fake waiting for the pizza to cook in the oven. 
+                await Task.Delay(bakeingInstruction.Time * 10);                
             }
         }
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace LOR.Pizzeria
 {
@@ -11,7 +12,13 @@ namespace LOR.Pizzeria
     {
         static void Main(string[] args)
         {
+            // Fudge to get async to work in a console app
+            Task t = MainAsync(args);
+            t.Wait();
+        }
 
+        static async Task MainAsync(string[] args)
+        {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.File("logs/Pizzeria.txt", rollingInterval: RollingInterval.Hour)
@@ -26,17 +33,23 @@ namespace LOR.Pizzeria
             var order = GetUsersOrder(selectedStore, recipes);            
 
             var pizzas = new List<Pizza>();
+
+            var makePizzaTasks = new List<Task<Pizza>>();
+
             foreach (var menuItem in order)
             {
                 // Create a new "Create Pizza Command" for every item on the order. 
                 var makePizzaCommand = new MakePizzaCommand(selectedStore.kitchen, menuItem);
 
                 // Get the front of house team to issue the command. 
-                pizzas.Add(selectedStore.frontOfHouse.RunCommand(makePizzaCommand));
+                makePizzaTasks.Add(selectedStore.frontOfHouse.RunCommand(makePizzaCommand));
             }
 
+            // Wait for all the pizzas to be made
+            await Task.WhenAll(makePizzaTasks);            
+
             Console.WriteLine("\nYour order is ready!");
-            Console.WriteLine($"Total Price {pizzas.Sum(x => x.BasePrice)}");
+            Console.WriteLine($"Total Price {makePizzaTasks.Sum(x => x.Result.BasePrice)}");
 
             Log.Information("Pizzeria Application Finished");
         }

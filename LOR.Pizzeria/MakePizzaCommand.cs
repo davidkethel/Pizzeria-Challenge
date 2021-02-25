@@ -19,7 +19,7 @@ namespace LOR.Pizzeria
             MenuItem = menuItem;
         }
 
-        public override Pizza Execute()
+        public override Task<Pizza> Execute()
         {
             Log.Information($"Executing Make Pizza Command : {MenuItem.Name}");
             return Kitchen.PreparePizza(MenuItem);
