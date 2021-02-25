@@ -25,23 +25,21 @@ namespace LOR.Pizzeria
 
             var selectedStore = GetUsersLocation(stores);
 
-            var order = GetUsersOrder(selectedStore, recipes);
+            var order = GetUsersOrder(selectedStore, recipes);            
 
-            //Order everthing on the menu
-            //var order = new List<MenuItem>();
-            //order.AddRange(selectedStore.Menu);
-
-
+            var pizzas = new List<Pizza>();
             foreach (var menuItem in order)
             {
                 // Create a new "Create Pizza Command" for every item on the order. 
                 var makePizzaCommand = new MakePizzaCommand(selectedStore.kitchen, menuItem);
 
                 // Get the front of house team to issue the command. 
-                selectedStore.frontOfHouse.RunCommand(makePizzaCommand);
+                pizzas.Add(selectedStore.frontOfHouse.RunCommand(makePizzaCommand));
             }
 
-            Console.WriteLine("\nYour pizza is ready!");
+            Console.WriteLine("\nYour order is ready!");
+            Console.WriteLine($"Total Price {pizzas.Sum(x => x.BasePrice)}");
+
             Log.Information("Pizzeria Application Finished");
         }
 

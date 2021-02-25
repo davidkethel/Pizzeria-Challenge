@@ -10,11 +10,7 @@ namespace LOR.Pizzeria
         public string Name { get; set; }
         public List<string> Toppings { get; set; } = new List<string>();
         public decimal BasePrice { get; set; }
-        public int Slices { get; set; }
-        
-        public void PrintReceipt()
-        {
-            Console.WriteLine($"Total price: { BasePrice}");
-        }
+        public int Slices { get; set; }        
+       
     }
 }
