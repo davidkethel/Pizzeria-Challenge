@@ -6,9 +6,21 @@ namespace LOR.Pizzeria
 {
     public class Pizza
     {
+        public Pizza(MenuItem selectedMenuItem, Recipe recipe)
+        {
+            Name = selectedMenuItem.Name;
+            Ingredients = recipe.Ingredients;
+            BasePrice = selectedMenuItem.BasePrice;
+            Slices = recipe.Slices;
+            BakeingInstructions = recipe.BakeingSteps;
+        }
+
         public string Name { get; set; }
         public List<string> Ingredients { get; set; } = new List<string>();
         public decimal BasePrice { get; set; }
+        public int Slices { get; set; }
+        public List<BakeingInstructions> BakeingInstructions { get; set; }
+
 
         public void Prepare()
         {
@@ -23,22 +35,15 @@ namespace LOR.Pizzeria
 
         public void Bake()
         {
-            if (Name == "Margherita")
-                Console.WriteLine("Baking pizza for 15 minutes at 200 degrees...");
-            else
+            foreach (var bakeingInstruction in BakeingInstructions)
             {
-                Console.WriteLine("Baking pizza for 30 minutes at 200 degrees...");
+                Console.WriteLine($"Baking pizza for {bakeingInstruction.Time} minutes at {bakeingInstruction.Temperature} degrees...");
             }
         }
 
         public void Cut()
         {
-            if (Name == "Florenza")
-                Console.WriteLine("Cutting pizza into 6 slices with a special knife...");
-            else
-            {
-                Console.WriteLine("Cutting pizza into 8 slices...");
-            }
+            Console.WriteLine($"Cutting pizza into {Slices} slices");
         }
 
         public void Box()
@@ -50,12 +55,6 @@ namespace LOR.Pizzeria
         public void PrintReceipt()
         {
             Console.WriteLine("Total price: " + BasePrice);
-        }
-
-        public override string ToString()
-        {
-            var ingredientsList = String.Join(", ", Ingredients);
-            return $"{Name} - {ingredientsList} - {BasePrice} AUD";
         }
     }
 }
