@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ namespace LOR.Pizzeria
 
         public Pizza PreparePizza(MenuItem menuItem)
         {
+            Log.Information($"Started Preparing Pizza {menuItem.Name}");
             Console.WriteLine("Preparing " + menuItem.Name + "...");
 
             var recipe = RecipeBook.FirstOrDefault(x => string.Equals(x.Name.Trim(), menuItem.Name.Trim(), StringComparison.InvariantCultureIgnoreCase));
@@ -33,11 +35,13 @@ namespace LOR.Pizzeria
             Cut(newPizza, recipe);
             Box(newPizza);
 
+            Log.Information($"Finished Preparing Pizza {menuItem.Name}");
             return newPizza;
         }
 
         public void Bake(Pizza pizza, Recipe recipe)
-        {            
+        {
+            Log.Information($"Bakeing Pizza {pizza.Name}");
             foreach (var bakeingInstruction in recipe.BakeingSteps)
             {
                 Console.WriteLine($"Baking {pizza.Name} for {bakeingInstruction.Time} minutes at {bakeingInstruction.Temperature} degrees...");
@@ -45,13 +49,15 @@ namespace LOR.Pizzeria
         }
 
         public void Cut(Pizza pizza, Recipe recipe)
-        {            
+        {
+            Log.Information($"Cutting Pizza {pizza.Name}");
             Console.WriteLine($"Cutting {pizza.Name} into {recipe.Slices} slices");
             pizza.Slices = recipe.Slices;
         }
 
         public void Box(Pizza pizza)
         {
+            Log.Information($"Boxing Pizza {pizza.Name}");
             Console.WriteLine($"Putting {pizza.Name} into a nice box...");
         }
     }

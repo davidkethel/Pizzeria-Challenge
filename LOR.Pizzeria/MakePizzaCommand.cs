@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace LOR.Pizzeria
 
         public override Pizza Execute()
         {
+            Log.Information($"Executing Make Pizza Command : {MenuItem.Name}");
             return Kitchen.PreparePizza(MenuItem);
         }
     }
