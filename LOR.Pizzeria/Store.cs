@@ -8,6 +8,6 @@ namespace LOR.Pizzeria
     {
         public string Location { get; set; }
 
-        public List<Pizza> Menu { get; set; }
+        public List<MenuItem> Menu { get; set; }
     }
 }
