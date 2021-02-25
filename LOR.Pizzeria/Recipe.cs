@@ -10,7 +10,6 @@ namespace LOR.Pizzeria
 
         public List<string> Ingredients { get; set; } = new List<string>();
 
-
         public List<BakeingInstructions> BakeingSteps { get; set; }
 
         public int Slices { get; set; }
