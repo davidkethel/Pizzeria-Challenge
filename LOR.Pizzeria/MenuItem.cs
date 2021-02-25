@@ -4,13 +4,9 @@ using System.Text;
 
 namespace LOR.Pizzeria
 {
-    public class Pizza
+   public class MenuItem
     {
-       
         public string Name { get; set; }
-        public List<string> Toppings { get; set; } = new List<string>();
         public decimal BasePrice { get; set; }
-        public int Slices { get; set; }        
-       
     }
 }

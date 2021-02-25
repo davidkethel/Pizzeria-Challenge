@@ -1,0 +1,53 @@
+[
+  {
+    "Location": "Brisbane",
+    "Menu": [
+      {
+        "Name": "Capriciosa",       
+        "BasePrice": 20
+      },
+      {
+        "Name": "Florenza",        
+        "BasePrice": 21
+      },
+      {
+        "Name": "Margherita",
+        "BasePrice": 22
+      },
+      {
+        "Name": "Hawaiian",
+        "BasePrice": 22
+      }
+    ]
+  },
+  {
+    "Location": "Sydney",
+    "Menu": [
+      {
+        "Name": "Capriciosa",        
+        "BasePrice": 30
+      },
+      {
+        "Name": "Margherita",        
+        "BasePrice": 32
+      }
+    ]
+  },
+  {
+    "Location": "Gold Coast",
+    "Menu": [
+      {
+        "Name": "Capriciosa",
+        "BasePrice": 25
+      },
+      {
+        "Name": "Margherita",        
+        "BasePrice": 27
+      },
+      {
+        "Name": "Florenza",        
+        "BasePrice": 24
+      }
+    ]
+  }
+]
