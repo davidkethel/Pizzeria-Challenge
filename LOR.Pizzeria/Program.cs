@@ -22,23 +22,22 @@ namespace LOR.Pizzeria
             var recipes = LoadRecipes();
             var stores = LoadStores(recipes);
 
-
             var selectedStore = GetUsersLocation(stores);
-            var selectedMenuItem = GetUsersMenuChoice(selectedStore, recipes);
+            var order = GetUsersOrder(selectedStore, recipes);            
 
+            var pizzas = new List<Pizza>();
+            foreach (var menuItem in order)
+            {
+                // Create a new "Create Pizza Command" for every item on the order. 
+                var makePizzaCommand = new MakePizzaCommand(selectedStore.kitchen, menuItem);
 
-            //Get the recipe for the selected menu item
-            var selectedMenuItemsRecipe = recipes.FirstOrDefault(x => string.Equals(x.Name.Trim(), selectedMenuItem.Name.Trim(), StringComparison.InvariantCultureIgnoreCase));
+                // Get the front of house team to issue the command. 
+                pizzas.Add(selectedStore.frontOfHouse.RunCommand(makePizzaCommand));
+            }
 
-            // Build a new pizza for the selected menu item from its recipe.
-            var selectedPizza = new Pizza(selectedMenuItem, selectedMenuItemsRecipe);
-            selectedPizza.Prepare();
-            selectedPizza.Bake();
-            selectedPizza.Cut();
-            selectedPizza.Box();
-            selectedPizza.PrintReceipt();
+            Console.WriteLine("\nYour order is ready!");
+            Console.WriteLine($"Total Price {pizzas.Sum(x => x.BasePrice)}");
 
-            Console.WriteLine("\nYour pizza is ready!");
             Log.Information("Pizzeria Application Finished");
         }
 
@@ -46,7 +45,7 @@ namespace LOR.Pizzeria
         {
             Log.Information("Load Stores Started");
             var stores = new List<Store>();
-            var filePath = "Stores.json";
+            var filePath = @"Data\Stores.json";
             try
             {
                 var jsonString = File.ReadAllText(filePath);
@@ -60,19 +59,22 @@ namespace LOR.Pizzeria
                 Environment.Exit(0);
             }
 
-            //ensure stores only include menu items we have a recipie for
+            //ensure stores only include menu items we have a recipe for
             foreach (var store in stores)
             {
                 var missingRecipes = store.Menu.Select(x => x.Name).Except(recipes.Select(r => r.Name)).ToList();
                 if (missingRecipes.Any())
                 {
-                    foreach (var missingRecipie in missingRecipes)
+                    foreach (var missingRecipe in missingRecipes)
                     {
-                        Log.Warning($"WARNING : No recipe found for menu item { missingRecipie } in location {store.Location}");
-                        Log.Warning($"WARNING : Menu Item { missingRecipie } will be removed from {store.Location}");
-                        store.Menu.RemoveAll(x => x.Name == missingRecipie);
+                        Log.Warning($"WARNING : No recipe found for menu item { missingRecipe } in location {store.Location}");
+                        Log.Warning($"WARNING : Menu Item { missingRecipe } will be removed from {store.Location}");
+                        store.Menu.RemoveAll(x => x.Name == missingRecipe);
                     }
                 }
+
+                // Give each kitchen a recipe book. 
+                store.kitchen.RecipeBook = recipes;
             }
 
             Log.Information($"Load Stores Finished. {stores.Count} stores Loaded");
@@ -84,7 +86,7 @@ namespace LOR.Pizzeria
         {
             Log.Information("Load Recipes Started");
             var recipes = new List<Recipe>();
-            var filePath = "Recipes.json";
+            var filePath = @"Data\Recipes.json";
             try
             {
                 var jsonString = File.ReadAllText(filePath);
@@ -122,44 +124,61 @@ namespace LOR.Pizzeria
             return selectedStore;
         }
 
-        private static MenuItem GetUsersMenuChoice(Store store, List<Recipe> recipes)
+        private static List<MenuItem> GetUsersOrder(Store store, List<Recipe> recipes)
         {
             Log.Information("Get User's Menu choice started");
             Console.WriteLine("MENU");
 
-            var menuDesriptions = new Dictionary<string, string>();
+            var order = new List<MenuItem>();
+            var orderComplete = false;
 
+            // Build up a dictionary with the name and description of each menu item.
+            // That way if need be we don't need to rebuild the description text later on.
+            var menuDesriptions = new Dictionary<string, string>();
             foreach (var menuItem in store.Menu)
-            {
-                // Build up a dictionary with the name and description of each menu item.
-                // That way if need be we don't need to rebuild the description text later on.
+            {                
                 var Ingredients = recipes.FirstOrDefault(x => x.Name == menuItem.Name).Ingredients;
                 var ingredientsList = string.Join(", ", Ingredients);
                 var description = $"{menuItem.Name} - {ingredientsList} - {menuItem.BasePrice} AUD";
 
-                menuDesriptions.Add(menuItem.Name, description);
-                Console.WriteLine(description);
+                menuDesriptions.Add(menuItem.Name, description);             
             }
 
-            Console.WriteLine("What can I get you?");
-            var menuType = Console.ReadLine();
-            var selectedMenuItem = store.Menu.FirstOrDefault(x => string.Equals(x.Name.Trim(), menuType.Trim(), StringComparison.InvariantCultureIgnoreCase));
-
-            //Keep asking the user for a Menu Item until they enter one from the menu
-            while (selectedMenuItem == null)
+            // Keep adding pizza's to the order untill the user says no.
+            while (!orderComplete)
             {
-                Console.WriteLine("Im Sorry, I don't recognize that dish. Please select from the following menu");
                 foreach (var menuItem in store.Menu)
                 {
                     Console.WriteLine(menuDesriptions.GetValueOrDefault(menuItem.Name));
                 }
 
-                menuType = Console.ReadLine();
-                selectedMenuItem = store.Menu.FirstOrDefault(x => string.Equals(x.Name.Trim(), menuType.Trim(), StringComparison.InvariantCultureIgnoreCase));
+                Console.WriteLine("What can I get you?");
+                var menuType = Console.ReadLine();
+                var selectedMenuItem = store.Menu.FirstOrDefault(x => string.Equals(x.Name.Trim(), menuType.Trim(), StringComparison.InvariantCultureIgnoreCase));
+
+                //Keep asking the user for a Menu Item until they enter one from the menu
+                while (selectedMenuItem == null)
+                {
+                    Console.WriteLine("Im Sorry, I don't recognize that dish. Please select from the following menu");
+                    foreach (var menuItem in store.Menu)
+                    {
+                        Console.WriteLine(menuDesriptions.GetValueOrDefault(menuItem.Name));
+                    }
+
+                    menuType = Console.ReadLine();
+                    selectedMenuItem = store.Menu.FirstOrDefault(x => string.Equals(x.Name.Trim(), menuType.Trim(), StringComparison.InvariantCultureIgnoreCase));
+                }
+
+                order.Add(selectedMenuItem);
+                Console.WriteLine($"{selectedMenuItem.Name} added to your order.");                
+
+                Console.WriteLine("Would you like to add another pizza to your order? [Y/N]");
+                orderComplete = Console.ReadLine() == "N";
+
             }
 
-            Log.Information($"Get User's menu choice Finished. {selectedMenuItem.Name} Selected");
-            return selectedMenuItem;
+            Log.Information($"Get User's Order Finished. {order.Count()} items ordered.");
+            return order;
         }
     }
 }
