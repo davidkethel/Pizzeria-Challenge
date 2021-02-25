@@ -24,19 +24,22 @@ namespace LOR.Pizzeria
 
 
             var selectedStore = GetUsersLocation(stores);
-            var selectedMenuItem = GetUsersMenuChoice(selectedStore, recipes);
+
+            var order = GetUsersOrder(selectedStore, recipes);
+
+            //Order everthing on the menu
+            //var order = new List<MenuItem>();
+            //order.AddRange(selectedStore.Menu);
 
 
-            //Get the recipe for the selected menu item
-            var selectedMenuItemsRecipe = recipes.FirstOrDefault(x => string.Equals(x.Name.Trim(), selectedMenuItem.Name.Trim(), StringComparison.InvariantCultureIgnoreCase));
+            foreach (var menuItem in order)
+            {
+                // Create a new "Create Pizza Command" for every item on the order. 
+                var makePizzaCommand = new MakePizzaCommand(selectedStore.kitchen, menuItem);
 
-            // Build a new pizza for the selected menu item from its recipe.
-            var selectedPizza = new Pizza(selectedMenuItem, selectedMenuItemsRecipe);
-            selectedPizza.Prepare();
-            selectedPizza.Bake();
-            selectedPizza.Cut();
-            selectedPizza.Box();
-            selectedPizza.PrintReceipt();
+                // Get the front of house team to issue the command. 
+                selectedStore.frontOfHouse.RunCommand(makePizzaCommand);
+            }
 
             Console.WriteLine("\nYour pizza is ready!");
             Log.Information("Pizzeria Application Finished");
@@ -125,7 +128,7 @@ namespace LOR.Pizzeria
             return selectedStore;
         }
 
-        private static MenuItem GetUsersMenuChoice(Store store, List<Recipe> recipes)
+        private static List<MenuItem> GetUsersOrder(Store store, List<Recipe> recipes)
         {
             Log.Information("Get User's Menu choice started");
             Console.WriteLine("MENU");
@@ -162,7 +165,7 @@ namespace LOR.Pizzeria
             }
 
             Log.Information($"Get User's menu choice Finished. {selectedMenuItem.Name} Selected");
-            return selectedMenuItem;
+            return new List<MenuItem> { selectedMenuItem };
         }
     }
 }
