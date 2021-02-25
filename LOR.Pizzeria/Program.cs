@@ -133,39 +133,56 @@ namespace LOR.Pizzeria
             Log.Information("Get User's Menu choice started");
             Console.WriteLine("MENU");
 
-            var menuDesriptions = new Dictionary<string, string>();
+            var order = new List<MenuItem>();
+            var orderComplete = false;
 
+            // Build up a dictionary with the name and description of each menu item.
+            // That way if need be we don't need to rebuild the description text later on.
+            var menuDesriptions = new Dictionary<string, string>();
             foreach (var menuItem in store.Menu)
-            {
-                // Build up a dictionary with the name and description of each menu item.
-                // That way if need be we don't need to rebuild the description text later on.
+            {                
                 var Ingredients = recipes.FirstOrDefault(x => x.Name == menuItem.Name).Ingredients;
                 var ingredientsList = string.Join(", ", Ingredients);
                 var description = $"{menuItem.Name} - {ingredientsList} - {menuItem.BasePrice} AUD";
 
-                menuDesriptions.Add(menuItem.Name, description);
-                Console.WriteLine(description);
+                menuDesriptions.Add(menuItem.Name, description);             
             }
 
-            Console.WriteLine("What can I get you?");
-            var menuType = Console.ReadLine();
-            var selectedMenuItem = store.Menu.FirstOrDefault(x => string.Equals(x.Name.Trim(), menuType.Trim(), StringComparison.InvariantCultureIgnoreCase));
-
-            //Keep asking the user for a Menu Item until they enter one from the menu
-            while (selectedMenuItem == null)
+            // Keep adding pizza's to the order untill the user says no.
+            while (!orderComplete)
             {
-                Console.WriteLine("Im Sorry, I don't recognize that dish. Please select from the following menu");
                 foreach (var menuItem in store.Menu)
                 {
                     Console.WriteLine(menuDesriptions.GetValueOrDefault(menuItem.Name));
                 }
 
-                menuType = Console.ReadLine();
-                selectedMenuItem = store.Menu.FirstOrDefault(x => string.Equals(x.Name.Trim(), menuType.Trim(), StringComparison.InvariantCultureIgnoreCase));
+                Console.WriteLine("What can I get you?");
+                var menuType = Console.ReadLine();
+                var selectedMenuItem = store.Menu.FirstOrDefault(x => string.Equals(x.Name.Trim(), menuType.Trim(), StringComparison.InvariantCultureIgnoreCase));
+
+                //Keep asking the user for a Menu Item until they enter one from the menu
+                while (selectedMenuItem == null)
+                {
+                    Console.WriteLine("Im Sorry, I don't recognize that dish. Please select from the following menu");
+                    foreach (var menuItem in store.Menu)
+                    {
+                        Console.WriteLine(menuDesriptions.GetValueOrDefault(menuItem.Name));
+                    }
+
+                    menuType = Console.ReadLine();
+                    selectedMenuItem = store.Menu.FirstOrDefault(x => string.Equals(x.Name.Trim(), menuType.Trim(), StringComparison.InvariantCultureIgnoreCase));
+                }
+
+                order.Add(selectedMenuItem);
+                Console.WriteLine($"{selectedMenuItem.Name} added to your order.");                
+
+                Console.WriteLine("Would you like to add another pizza to your order? [Y/N]");
+                orderComplete = Console.ReadLine() == "N";
+
             }
 
-            Log.Information($"Get User's menu choice Finished. {selectedMenuItem.Name} Selected");
-            return new List<MenuItem> { selectedMenuItem };
+            Log.Information($"Get User's Order Finished. {order.Count()} items ordered.");
+            return order;
         }
     }
 }
