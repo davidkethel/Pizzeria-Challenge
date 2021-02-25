@@ -22,9 +22,7 @@ namespace LOR.Pizzeria
             var recipes = LoadRecipes();
             var stores = LoadStores(recipes);
 
-
             var selectedStore = GetUsersLocation(stores);
-
             var order = GetUsersOrder(selectedStore, recipes);            
 
             var pizzas = new List<Pizza>();
