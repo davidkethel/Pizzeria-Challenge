@@ -46,7 +46,7 @@ namespace LOR.Pizzeria
         {
             Log.Information("Load Stores Started");
             var stores = new List<Store>();
-            var filePath = "Stores.json";
+            var filePath = @"Data\Stores.json";
             try
             {
                 var jsonString = File.ReadAllText(filePath);
@@ -60,19 +60,22 @@ namespace LOR.Pizzeria
                 Environment.Exit(0);
             }
 
-            //ensure stores only include menu items we have a recipie for
+            //ensure stores only include menu items we have a recipe for
             foreach (var store in stores)
             {
                 var missingRecipes = store.Menu.Select(x => x.Name).Except(recipes.Select(r => r.Name)).ToList();
                 if (missingRecipes.Any())
                 {
-                    foreach (var missingRecipie in missingRecipes)
+                    foreach (var missingRecipe in missingRecipes)
                     {
-                        Log.Warning($"WARNING : No recipe found for menu item { missingRecipie } in location {store.Location}");
-                        Log.Warning($"WARNING : Menu Item { missingRecipie } will be removed from {store.Location}");
-                        store.Menu.RemoveAll(x => x.Name == missingRecipie);
+                        Log.Warning($"WARNING : No recipe found for menu item { missingRecipe } in location {store.Location}");
+                        Log.Warning($"WARNING : Menu Item { missingRecipe } will be removed from {store.Location}");
+                        store.Menu.RemoveAll(x => x.Name == missingRecipe);
                     }
                 }
+
+                // Give each kitchen a recipe book. 
+                store.kitchen.RecipeBook = recipes;
             }
 
             Log.Information($"Load Stores Finished. {stores.Count} stores Loaded");
@@ -84,7 +87,7 @@ namespace LOR.Pizzeria
         {
             Log.Information("Load Recipes Started");
             var recipes = new List<Recipe>();
-            var filePath = "Recipes.json";
+            var filePath = @"Data\Recipes.json";
             try
             {
                 var jsonString = File.ReadAllText(filePath);
